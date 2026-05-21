@@ -1,0 +1,35 @@
+# ============================================================
+#  Render.com Blueprint — EndoScan AI
+#  Bu fayl bo'lsa, Render loyihani avtomatik sozlaydi.
+# ============================================================
+services:
+  - type: web
+    name: endoscan-ai
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+
+    # DIQQAT: bu loyihada torch/AI model bor — kamida 2GB RAM kerak.
+    # "free" va "starter" (512MB) YETMAYDI — server OOM bilan o'chadi.
+    # Shuning uchun "standard" tanlangan (2GB RAM).
+    plan: standard
+
+    region: frankfurt
+    healthCheckPath: /
+
+    envVars:
+      # Maxfiy qiymatlar — Render dashboard'ida QO'LDA kiritiladi
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: ENDOSCAN_ADMIN_PASSWORD
+        sync: false
+      - key: ENDOSCAN_ADMIN_USERNAME
+        value: admin
+
+    # Doimiy disk — baza va yuklangan rasmlar deploy'dan keyin saqlanadi.
+    # (Disk faqat pullik planlarda ishlaydi.)
+    disk:
+      name: endoscan-data
+      mountPath: /var/data
+      sizeGB: 1
